@@ -22,6 +22,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.webjars.Webjars
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.io.File
 import java.time.Instant

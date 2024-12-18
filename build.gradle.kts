@@ -7,6 +7,7 @@ val appVersion: String by project
 val exposedVersion: String by project
 val h2Version: String by project
 val logbackVersion: String by project
+val ktorVersion: String by project
 
 group = "cn.rtast"
 version = appVersion
@@ -22,6 +23,9 @@ repositories {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-status-pages-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-mustache-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-webjars:$ktorVersion")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-auto-head-response-jvm")
