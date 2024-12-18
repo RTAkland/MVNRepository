@@ -9,11 +9,11 @@ package cn.rtast.mvnrepo.routings
 
 import cn.rtast.mvnrepo.REPOSITORIES
 import cn.rtast.mvnrepo.STORAGE_PATH
+import io.ktor.http.ContentDisposition.Companion.File
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.io.File
 
 fun Application.configureFilesListing() {
     routing {

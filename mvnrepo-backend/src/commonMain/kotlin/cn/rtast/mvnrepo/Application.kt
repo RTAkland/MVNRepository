@@ -12,7 +12,7 @@ import cn.rtast.mvnrepo.routings.configureRepositoryRouting
 import cn.rtast.mvnrepo.util.AccountManager
 import cn.rtast.mvnrepo.util.initDatabase
 import io.ktor.server.application.Application
-import io.ktor.server.netty.EngineMain
+import io.ktor.server.cio.EngineMain
 
 suspend fun main(args: Array<String>) {
     STORAGE_PATH.mkdirs()

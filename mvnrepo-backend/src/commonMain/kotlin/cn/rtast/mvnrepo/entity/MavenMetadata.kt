@@ -7,11 +7,8 @@
 
 package cn.rtast.mvnrepo.entity
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 
-
-@JacksonXmlRootElement(localName = "metadata")
+@Xml
 data class MavenMetadata(
     val groupId: String,
     val artifactId: String,
@@ -25,7 +22,6 @@ data class MavenMetadata(
     )
 
     data class Versions(
-        @JacksonXmlElementWrapper(useWrapping = false)
         val version: List<String>,
     )
 }

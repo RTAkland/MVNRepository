@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.matthewnelson.kmp.file.File
 import java.io.File
 
 val gson: Gson = GsonBuilder()
