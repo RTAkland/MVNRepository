@@ -9,6 +9,7 @@ package cn.rtast.mvnrepo.routings
 
 import cn.rtast.mvnrepo.REPOSITORIES
 import cn.rtast.mvnrepo.STORAGE_PATH
+import cn.rtast.mvnrepo.accountManager
 import cn.rtast.mvnrepo.entity.MavenMetadata
 import cn.rtast.mvnrepo.entity.PackageStructure
 import cn.rtast.mvnrepo.util.str.toXMLString
@@ -31,7 +32,7 @@ fun Application.configureRepositoryRouting() {
     install(Authentication) {
         basic("authenticate") {
             validate { credentials ->
-                if (credentials.name == credentials.password) {
+                if (accountManager.validate(credentials.name, credentials.password)) {
                     UserIdPrincipal(credentials.name)
                 } else {
                     null
