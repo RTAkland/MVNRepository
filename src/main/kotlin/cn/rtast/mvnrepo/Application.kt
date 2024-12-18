@@ -7,6 +7,7 @@
 
 package cn.rtast.mvnrepo
 
+import cn.rtast.mvnrepo.routings.configureFilesListing
 import cn.rtast.mvnrepo.routings.configureRepositoryRouting
 import cn.rtast.mvnrepo.util.AccountManager
 import cn.rtast.mvnrepo.util.initDatabase
@@ -21,6 +22,7 @@ suspend fun main(args: Array<String>) {
 
 fun Application.module() {
     configureRepositoryRouting()
+    configureFilesListing()
 }
 
 val accountManager = AccountManager()

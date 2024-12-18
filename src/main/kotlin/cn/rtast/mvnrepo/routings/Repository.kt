@@ -51,14 +51,6 @@ fun Application.configureRepositoryRouting() {
                 }
             }
         }
-
-        REPOSITORIES.forEach {
-            get(Regex("/$it/(.*)")) {
-                val uri = call.request.uri
-                val file = File(STORAGE_PATH, uri)
-                call.respondFile(file)
-            }
-        }
     }
 }
 
