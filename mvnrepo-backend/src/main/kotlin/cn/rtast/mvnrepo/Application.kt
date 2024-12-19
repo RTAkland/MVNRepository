@@ -9,6 +9,7 @@ package cn.rtast.mvnrepo
 
 import cn.rtast.mvnrepo.routings.api.configureRepositoryAPIRouting
 import cn.rtast.mvnrepo.routings.api.configureUserAPIRouting
+import cn.rtast.mvnrepo.routings.configureIndexRouting
 import cn.rtast.mvnrepo.routings.configureRepositoryRouting
 import cn.rtast.mvnrepo.util.AccountManager
 import cn.rtast.mvnrepo.util.initDatabase
@@ -28,13 +29,18 @@ suspend fun main(args: Array<String>) {
     parser.parse(args)
     STORAGE_PATH.mkdirs()
     initializeDatabase(tempToken)
-    embeddedServer(Netty, port = port, host = "0.0.0.0", module = Application::module).start(wait = true)
+    embeddedServer(
+        Netty, port = port,
+        host = "0.0.0.0",
+        module = Application::module
+    ).start(wait = true)
 }
 
 fun Application.module() {
     configureRepositoryRouting()
     configureRepositoryAPIRouting()
     configureUserAPIRouting()
+    configureIndexRouting()
 }
 
 suspend fun initializeDatabase(token: String) {

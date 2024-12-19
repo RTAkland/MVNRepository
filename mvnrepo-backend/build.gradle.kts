@@ -1,6 +1,7 @@
 plugins {
     id("application")
     id("io.ktor.plugin") version "3.0.2"
+    id("com.github.node-gradle.node") version "3.2.1"
 }
 
 val exposedVersion: String by project
@@ -29,4 +30,26 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.2")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("org.jetbrains.kotlinx:kotlinx-cli-jvm:0.3.6")
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir(project.layout.buildDirectory.dir("generated"))
+        }
+    }
+}
+
+tasks.named("processResources") {
+    dependsOn("compileJava")
+}
+
+tasks.processResources {
+    dependsOn(project(":mvnrepo-frontend").tasks.named("buildFrontend"))
+    doLast {
+        val generatedDir = file(project(":mvnrepo-frontend").layout.projectDirectory.dir("dist"))
+        val staticDir = file(project(":mvnrepo-backend").layout.buildDirectory.dir("generated"))
+        staticDir.deleteRecursively()
+        generatedDir.copyRecursively(staticDir, overwrite = true)
+    }
 }
