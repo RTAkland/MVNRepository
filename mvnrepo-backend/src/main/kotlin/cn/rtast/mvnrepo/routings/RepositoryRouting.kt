@@ -14,7 +14,7 @@ import cn.rtast.mvnrepo.entity.MavenMetadata
 import cn.rtast.mvnrepo.entity.PackageStructure
 import cn.rtast.mvnrepo.util.str.fromXML
 import cn.rtast.mvnrepo.util.str.toXMLString
-import cn.rtast.mvnrepo.util.toFormatedDate
+import cn.rtast.mvnrepo.util.toMavenFormatedDate
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -84,7 +84,7 @@ suspend fun storagePackage(structure: PackageStructure, createUser: String) {
                 structure.artifactVersion,
                 structure.artifactVersion,
                 MavenMetadata.Versions(listOf(structure.artifactVersion)),
-                Instant.now().epochSecond.toFormatedDate()
+                Instant.now().epochSecond.toMavenFormatedDate()
             )
         )
         mavenMetadataFile.writeText(defaultMetadata.toXMLString())
@@ -101,7 +101,7 @@ suspend fun storagePackage(structure: PackageStructure, createUser: String) {
                         add(structure.artifactVersion)
                     }.distinct()
                 ),
-                Instant.now().epochSecond.toFormatedDate()
+                Instant.now().epochSecond.toMavenFormatedDate()
             )
         )
         mavenMetadataFile.writeText(metadata.toXMLString())
