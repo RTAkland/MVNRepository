@@ -7,10 +7,12 @@
 
 package cn.rtast.mvnrepo
 
-import cn.rtast.mvnrepo.routings.configureAPIRouting
-import cn.rtast.mvnrepo.routings.configureFilesListing
+import cn.rtast.mvnrepo.routings.configureFilesListingRouting
+import cn.rtast.mvnrepo.routings.configureRepositoryAPIRouting
 import cn.rtast.mvnrepo.routings.configureRepositoryRouting
+import cn.rtast.mvnrepo.routings.configureUserAPIRouting
 import cn.rtast.mvnrepo.util.AccountManager
+import cn.rtast.mvnrepo.util.ArtifactManager
 import cn.rtast.mvnrepo.util.initDatabase
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -33,8 +35,9 @@ suspend fun main(args: Array<String>) {
 
 fun Application.module() {
     configureRepositoryRouting()
-    configureFilesListing()
-    configureAPIRouting()
+    configureFilesListingRouting()
+    configureRepositoryAPIRouting()
+    configureUserAPIRouting()
 }
 
 suspend fun initializeDatabase(token: String) {

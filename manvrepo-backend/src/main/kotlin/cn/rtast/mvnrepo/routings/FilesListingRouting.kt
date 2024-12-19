@@ -19,7 +19,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.webjars.*
 import java.io.File
 
-fun Application.configureFilesListing() {
+fun Application.configureFilesListingRouting() {
     install(Webjars) {
         path = "assets"
     }

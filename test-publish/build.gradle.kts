@@ -26,7 +26,7 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             artifact(sourceJar)
-            artifactId = project.name
+            artifactId = "test-publish-2"
             version = testPublishVersion
         }
     }
@@ -36,8 +36,8 @@ publishing {
             url = uri("http://127.0.0.1:8088/releases")
             isAllowInsecureProtocol = true
             credentials {
-                username = "1"
-                password = "1"
+                username = "admin"
+                password = "37704136-36dd-4dbe-8b1f-b93976eabefd"
             }
         }
     }

@@ -9,6 +9,8 @@ package cn.rtast.mvnrepo.util
 
 import cn.rtast.mvnrepo.db.AccountTable
 import cn.rtast.mvnrepo.entity.AccountEntity
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
@@ -74,6 +76,12 @@ class AccountManager {
                     return@suspendedTransaction true
                 }
             return@suspendedTransaction false
+        }
+    }
+
+    suspend fun deleteAccount(username: String) {
+        suspendedTransaction {
+            AccountTable.deleteWhere { AccountTable.username eq username }
         }
     }
 }

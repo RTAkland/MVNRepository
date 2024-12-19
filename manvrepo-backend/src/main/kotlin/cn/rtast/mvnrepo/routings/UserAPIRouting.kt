@@ -8,6 +8,7 @@
 package cn.rtast.mvnrepo.routings
 
 import cn.rtast.mvnrepo.accountManager
+import cn.rtast.mvnrepo.entity.api.DeleteAccount
 import cn.rtast.mvnrepo.entity.api.PostAddAccount
 import cn.rtast.mvnrepo.entity.api.ResponseMessage
 import cn.rtast.mvnrepo.util.str.fromJson
@@ -19,7 +20,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Application.configureAPIRouting() {
+fun Application.configureUserAPIRouting() {
     routing {
         authenticate("authenticate") {
             post("/-/api/user") {
@@ -45,6 +46,19 @@ fun Application.configureAPIRouting() {
                 } else {
                     accountManager.updateAccount(account.username, account.password)
                     call.respondText(ResponseMessage(200, "账户更新成功").toJson())
+                }
+            }
+
+            delete("/-/api/user") {
+                val account = call.receiveText().fromJson<DeleteAccount>()
+                if (accountManager.getAccount(account.username) == null) {
+                    call.respondText(
+                        ResponseMessage(404, "账户不存在").toJson(),
+                        status = HttpStatusCode.NotFound
+                    )
+                } else {
+                    accountManager.deleteAccount(account.username)
+                    call.respondText(ResponseMessage(200, "账户删除成功").toJson())
                 }
             }
         }
