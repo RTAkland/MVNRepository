@@ -30,7 +30,3 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("org.jetbrains.kotlinx:kotlinx-cli-jvm:0.3.6")
 }
-
-tasks.shadowJar {
-//    minimize()
-}
