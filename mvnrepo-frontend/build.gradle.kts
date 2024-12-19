@@ -31,3 +31,5 @@ sourceSets {
         }
     }
 }
+
+file("dist").mkdirs()
