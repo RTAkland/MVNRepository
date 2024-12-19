@@ -7,10 +7,9 @@
 
 package cn.rtast.mvnrepo
 
-import cn.rtast.mvnrepo.routings.configureFilesListingRouting
 import cn.rtast.mvnrepo.routings.api.configureRepositoryAPIRouting
-import cn.rtast.mvnrepo.routings.configureRepositoryRouting
 import cn.rtast.mvnrepo.routings.api.configureUserAPIRouting
+import cn.rtast.mvnrepo.routings.configureRepositoryRouting
 import cn.rtast.mvnrepo.util.AccountManager
 import cn.rtast.mvnrepo.util.initDatabase
 import io.ktor.server.application.*
@@ -29,12 +28,11 @@ suspend fun main(args: Array<String>) {
     parser.parse(args)
     STORAGE_PATH.mkdirs()
     initializeDatabase(tempToken)
-    embeddedServer(Netty, port, module = Application::module).start(wait = true)
+    embeddedServer(Netty, port = port, host = "0.0.0.0", module = Application::module).start(wait = true)
 }
 
 fun Application.module() {
     configureRepositoryRouting()
-    configureFilesListingRouting()
     configureRepositoryAPIRouting()
     configureUserAPIRouting()
 }
