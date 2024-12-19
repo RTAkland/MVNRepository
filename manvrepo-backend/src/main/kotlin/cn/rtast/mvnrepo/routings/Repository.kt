@@ -12,6 +12,7 @@ import cn.rtast.mvnrepo.STORAGE_PATH
 import cn.rtast.mvnrepo.accountManager
 import cn.rtast.mvnrepo.entity.MavenMetadata
 import cn.rtast.mvnrepo.entity.PackageStructure
+import cn.rtast.mvnrepo.util.str.fromXML
 import cn.rtast.mvnrepo.util.str.toXMLString
 import cn.rtast.mvnrepo.util.toFormatedDate
 import io.ktor.http.*
@@ -22,7 +23,6 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.webjars.Webjars
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.io.File
 import java.time.Instant
@@ -87,5 +87,22 @@ fun storagePackage(structure: PackageStructure) {
             )
         )
         mavenMetadataFile.writeText(defaultMetadata.toXMLString())
+    } else {
+        val currentVersions = mavenMetadataFile.readText().fromXML<MavenMetadata>()
+        val metadata = MavenMetadata(
+            structure.artifactGroup.replace("/", "."),
+            structure.artifactId,
+            MavenMetadata.Versioning(
+                structure.artifactVersion,
+                structure.artifactVersion,
+                MavenMetadata.Versions(
+                    currentVersions.versioning.versions.version.toMutableList().apply {
+                        add(structure.artifactVersion)
+                    }
+                ),
+                Instant.now().epochSecond.toFormatedDate()
+            )
+        )
+        mavenMetadataFile.writeText(metadata.toXMLString())
     }
 }
