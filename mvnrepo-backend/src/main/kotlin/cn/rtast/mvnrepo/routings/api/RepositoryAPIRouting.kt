@@ -7,6 +7,7 @@
 
 package cn.rtast.mvnrepo.routings.api
 
+import cn.rtast.mvnrepo.PRIVATE_REPOSITORIES
 import cn.rtast.mvnrepo.REPOSITORIES
 import cn.rtast.mvnrepo.STORAGE_PATH
 import cn.rtast.mvnrepo.artifactManager
@@ -37,28 +38,29 @@ fun Application.configureRepositoryAPIRouting() {
                 deleteDirectory(filePath)
                 call.respondText(ResponseMessage(200, "已删除: ${artifact.artifactId}").toJson())
             }
-        }
 
-        get(Regex("/-/api/artifacts/(.*)")) {
-            val path = call.request.uri.replace("/-/api/artifacts/", "/")
-            if (path == "/") {
-                call.respondText(ListingFile(REPOSITORIES.map { ListingFile.Files(it, true) }).toJson())
-            } else {
-                val file = File(STORAGE_PATH, path)
-                if (file.isFile) {
-                    call.respondFile(file)
-                } else {
-                    val files = file.listFiles()?.map {
-                        ListingFile.Files(it.name, it.isDirectory)
-                    }
-                    if (files == null) {
-                        call.respond(HttpStatusCode.NotFound)
-                    } else {
-                        val listingFile = ListingFile(files)
-                        call.respondText(listingFile.toJson())
-                    }
+            PRIVATE_REPOSITORIES.forEach {
+                get(Regex("/-/api/artifacts/$it/(.*)")) {
+                    serveFile(call, it)
                 }
             }
+        }
+
+        REPOSITORIES.forEach {
+            get(Regex("/-/api/artifacts/$it/(.*)")) {
+                serveFile(call, it)
+            }
+        }
+
+        get("/-/api/artifacts") {
+            call.respondText(
+                ListingFile(
+                    "查询成功",
+                    (REPOSITORIES + PRIVATE_REPOSITORIES).size,
+                    (REPOSITORIES + PRIVATE_REPOSITORIES).map {
+                        ListingFile.Files(it, true)
+                    }).toJson()
+            )
         }
 
         get("/-/api/artifacts/search") {
@@ -76,5 +78,19 @@ fun Application.configureRepositoryAPIRouting() {
                 call.respondText(response)
             }
         }
+    }
+}
+
+private suspend fun serveFile(call: ApplicationCall, repo: String) {
+    val path = call.request.uri.replace("/-/api/artifacts/$repo/", "/$repo/")
+    val file = File(STORAGE_PATH, path)
+    if (file.isFile) {
+        call.respondFile(file)
+    } else {
+        val files = file.listFiles()?.map {
+            ListingFile.Files(it.name, it.isDirectory)
+        } ?: emptyList()
+        val listingFile = ListingFile("查询成功",files.size, files)
+        call.respondText(listingFile.toJson())
     }
 }

@@ -8,10 +8,12 @@
 package cn.rtast.mvnrepo.entity.api
 
 data class ListingFile(
-    val data: List<Files>
+    val message: String,
+    val count: Int,
+    val data: List<Files>,
 ) {
     data class Files(
         val name: String,
-        val idDirectory: Boolean
+        val isDirectory: Boolean
     )
 }
