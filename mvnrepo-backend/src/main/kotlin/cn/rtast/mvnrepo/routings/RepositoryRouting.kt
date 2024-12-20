@@ -52,6 +52,16 @@ fun Application.configureRepositoryRouting() {
                 }
             }
         }
+        REPOSITORIES.forEach {
+            get(Regex("/$it/(.*)")) {
+                val file = File(STORAGE_PATH, call.request.uri)
+                if (file.exists() && !file.isDirectory) {
+                    call.respondFile(file)
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
+        }
     }
 }
 
