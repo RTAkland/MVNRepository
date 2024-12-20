@@ -28,6 +28,9 @@ val REPOSITORIES = listOf(
     "releases",
     "snapshots",
 )
+val PRIVATE_REPOSITORIES = listOf(
+    "private"
+)
 
 val xmlMapper = XmlMapper(XmlFactory().apply {
     enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)

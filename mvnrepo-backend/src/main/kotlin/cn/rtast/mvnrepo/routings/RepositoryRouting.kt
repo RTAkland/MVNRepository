@@ -7,10 +7,7 @@
 
 package cn.rtast.mvnrepo.routings
 
-import cn.rtast.mvnrepo.REPOSITORIES
-import cn.rtast.mvnrepo.STORAGE_PATH
-import cn.rtast.mvnrepo.accountManager
-import cn.rtast.mvnrepo.artifactManager
+import cn.rtast.mvnrepo.*
 import cn.rtast.mvnrepo.entity.MavenMetadata
 import cn.rtast.mvnrepo.entity.PackageStructure
 import cn.rtast.mvnrepo.util.str.fromXML
@@ -45,7 +42,7 @@ fun Application.configureRepositoryRouting() {
 
     routing {
         authenticate("authenticate") {
-            REPOSITORIES.forEach {
+            (REPOSITORIES + PRIVATE_REPOSITORIES).forEach {
                 put(Regex("/$it/(.*)")) {
                     val authedUser = call.principal<UserIdPrincipal>()?.name!!
                     val packageStructure = parsePUTPackage(call)
@@ -53,18 +50,29 @@ fun Application.configureRepositoryRouting() {
                     call.respond(HttpStatusCode.OK)
                 }
             }
-        }
-        REPOSITORIES.forEach {
-            get(Regex("/$it/(.*)")) {
-                val file = File(STORAGE_PATH, call.request.uri)
-                if (file.exists() && !file.isDirectory) {
-                    call.respondFile(file)
-                    calculateDownloadCount(call)
-                } else {
-                    call.respond(HttpStatusCode.NotFound)
+
+            PRIVATE_REPOSITORIES.forEach {
+                get(Regex("/$it/(.*)")) {
+                    serveFile(call)
                 }
             }
         }
+
+        REPOSITORIES.forEach {
+            get(Regex("/$it/(.*)")) {
+                serveFile(call)
+            }
+        }
+    }
+}
+
+private suspend fun serveFile(call: ApplicationCall) {
+    val file = File(STORAGE_PATH, call.request.uri)
+    if (file.exists() && !file.isDirectory) {
+        call.respondFile(file)
+        calculateDownloadCount(call)
+    } else {
+        call.respond(HttpStatusCode.NotFound)
     }
 }
 
