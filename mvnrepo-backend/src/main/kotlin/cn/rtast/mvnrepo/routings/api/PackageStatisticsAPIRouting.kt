@@ -20,7 +20,7 @@ import io.ktor.server.routing.*
 fun Application.configurePackageStatisticsAPIRouting() {
     routing {
         authenticate("authenticate") {
-            get("/-/api/statistics/") {
+            get("/-/api/statistics") {
                 val groupId =(call.parameters["groupId"] ?: call.parameters["group"])?.replace(".", "/")
                 val repository = call.parameters["repository"] ?: call.parameters["repo"]
                 val artifactId = call.parameters["artifactId"] ?: call.parameters["artifact"]
