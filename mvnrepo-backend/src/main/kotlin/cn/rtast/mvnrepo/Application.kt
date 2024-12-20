@@ -7,6 +7,7 @@
 
 package cn.rtast.mvnrepo
 
+import cn.rtast.mvnrepo.routings.api.configureAppStatusAPIRouting
 import cn.rtast.mvnrepo.routings.api.configureRepositoryAPIRouting
 import cn.rtast.mvnrepo.routings.api.configureUserAPIRouting
 import cn.rtast.mvnrepo.routings.configureIndexRouting
@@ -47,6 +48,7 @@ fun Application.module() {
     configureRepositoryAPIRouting()
     configureUserAPIRouting()
     configureIndexRouting()
+    configureAppStatusAPIRouting()
 }
 
 suspend fun initializeDatabase(token: String) {
