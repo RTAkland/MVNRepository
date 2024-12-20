@@ -11,11 +11,14 @@ val buildTask = tasks.register<NpmTask>("buildFrontend") {
     inputs.dir(project.fileTree("src"))
     inputs.dir("node_modules")
     inputs.files("vite.config.js", "index.html")
-    val distDir = file(project.layout.projectDirectory.dir("dist"))
-    val generatedDir = file(project(":mvnrepo-backend").layout.buildDirectory.dir("generated")).apply {
-        mkdirs()
+    doLast {
+        val distDir = file(project.layout.projectDirectory.dir("dist"))
+        val generatedDir = file(project(":mvnrepo-backend").layout.buildDirectory.dir("generated"))
+        if (generatedDir.exists()) {
+            generatedDir.deleteRecursively()
+        }
+        distDir.copyRecursively(generatedDir, overwrite = true)
     }
-    distDir.copyRecursively(generatedDir, overwrite = true)
 }
 
 sourceSets {
