@@ -10,6 +10,7 @@ package cn.rtast.mvnrepo.routings
 import cn.rtast.mvnrepo.REPOSITORIES
 import cn.rtast.mvnrepo.STORAGE_PATH
 import cn.rtast.mvnrepo.accountManager
+import cn.rtast.mvnrepo.artifactManager
 import cn.rtast.mvnrepo.entity.MavenMetadata
 import cn.rtast.mvnrepo.entity.PackageStructure
 import cn.rtast.mvnrepo.util.str.fromXML
@@ -57,6 +58,7 @@ fun Application.configureRepositoryRouting() {
                 val file = File(STORAGE_PATH, call.request.uri)
                 if (file.exists() && !file.isDirectory) {
                     call.respondFile(file)
+                    calculateDownloadCount(call)
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }
@@ -65,13 +67,24 @@ fun Application.configureRepositoryRouting() {
     }
 }
 
-suspend fun parsePUTPackage(call: ApplicationCall): PackageStructure {
-    val fileBytes = call.receive<ByteArray>()
+private fun parseMetadata(call: ApplicationCall): Triple<String, String, String> {
     val uri = call.request.uri
     val repository = uri.split("/")[1]
     val packageGroup = uri.split("/")
         .drop(2).dropLast(3).joinToString("/")
     val artifactId = uri.split("/").dropLast(2).last()
+    return Triple(repository, packageGroup, artifactId)
+}
+
+suspend fun calculateDownloadCount(call: ApplicationCall) {
+    val (repository, packageGroup, artifactId) = parseMetadata(call)
+    artifactManager.increaseDownloadCount(packageGroup, repository, artifactId)
+}
+
+suspend fun parsePUTPackage(call: ApplicationCall): PackageStructure {
+    val fileBytes = call.receive<ByteArray>()
+    val uri = call.request.uri
+    val (repository, packageGroup, artifactId) = parseMetadata(call)
     val packageVersion = uri.split("/").dropLast(1).last()
     val jarName = uri.split("/").last()
     return PackageStructure(packageGroup, artifactId, packageVersion, jarName, repository, fileBytes)

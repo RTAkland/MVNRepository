@@ -8,56 +8,55 @@
 package cn.rtast.mvnrepo.util.file
 
 import cn.rtast.mvnrepo.db.ArtifactTable
-import cn.rtast.mvnrepo.entity.PackageStructure
-import cn.rtast.mvnrepo.entity.api.DeleteArtifact
+import cn.rtast.mvnrepo.entity.api.PackageStatistics
 import cn.rtast.mvnrepo.util.suspendedTransaction
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.update
-import java.time.Instant
+import org.jetbrains.exposed.sql.*
 
 class ArtifactManager {
-    suspend fun addArtifact(structure: PackageStructure, createUser: String) {
+
+    suspend fun increaseDownloadCount(group: String, repository: String, artifactId: String) {
         suspendedTransaction {
-            val ifArtifactExists = ArtifactTable.selectAll().where {
-                (ArtifactTable.groupId eq structure.artifactGroup)
-                    .and(ArtifactTable.artifactId eq structure.artifactId)
-                    .and(ArtifactTable.version eq structure.artifactVersion)
-                    .and(ArtifactTable.repository eq structure.repository)
-            }.distinct().firstOrNull()
-            if (ifArtifactExists == null) {
+            val ifExists = ArtifactTable.selectAll()
+                .where {
+                    (ArtifactTable.artifactId eq artifactId)
+                        .and { ArtifactTable.repository eq repository }
+                        .and { ArtifactTable.groupId eq group }
+                }.singleOrNull()
+            if (ifExists == null) {
                 ArtifactTable.insert {
-                    it[groupId] = structure.artifactGroup
-                    it[artifactId] = structure.artifactId
-                    it[version] = structure.artifactVersion
-                    it[createAt] = Instant.now().epochSecond
-                    it[createdBy] = createUser
-                    it[repository] = structure.repository
+                    it[ArtifactTable.artifactId] = artifactId
+                    it[groupId] = group
+                    it[ArtifactTable.repository] = repository
+                    it[downloadCount] = 0L
                 }
             } else {
-                ArtifactTable.update {
-                    it[groupId] = structure.artifactGroup
-                    it[artifactId] = structure.artifactId
-                    it[version] = structure.artifactVersion
-                    it[createAt] = Instant.now().epochSecond
-                    it[createdBy] = createUser
-                    it[repository] = structure.repository
+                ArtifactTable.update({
+                    (ArtifactTable.groupId eq group)
+                        .and { ArtifactTable.artifactId eq artifactId }
+                        .and { ArtifactTable.repository eq repository }
+                }) {
+                    with(SqlExpressionBuilder) {
+                        it.update(downloadCount, downloadCount + 1)
+                    }
                 }
             }
         }
     }
 
-    suspend fun deleteArtifact(artifact: DeleteArtifact) {
-        suspendedTransaction {
-            ArtifactTable.deleteWhere {
-                (groupId eq artifact.groupId)
-                    .and(artifactId eq artifact.artifactId)
-                    .and(version eq artifact.version)
-                    .and(repository eq artifact.repository)
-            }
+    suspend fun getDownloadCount(group: String, repository: String, artifactId: String): PackageStatistics? {
+        return suspendedTransaction {
+            val result = ArtifactTable.selectAll()
+                .where {
+                    (ArtifactTable.artifactId eq artifactId)
+                        .and { ArtifactTable.repository eq repository }
+                        .and { ArtifactTable.groupId eq group }
+                }.map {
+                    PackageStatistics(
+                        group, artifactId, repository,
+                        it[ArtifactTable.downloadCount]
+                    )
+                }.firstOrNull()
+            return@suspendedTransaction result
         }
     }
 }

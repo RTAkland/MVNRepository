@@ -8,11 +8,13 @@
 package cn.rtast.mvnrepo
 
 import cn.rtast.mvnrepo.routings.api.configureAppStatusAPIRouting
+import cn.rtast.mvnrepo.routings.api.configurePackageStatisticsAPIRouting
 import cn.rtast.mvnrepo.routings.api.configureRepositoryAPIRouting
 import cn.rtast.mvnrepo.routings.api.configureUserAPIRouting
 import cn.rtast.mvnrepo.routings.configureIndexRouting
 import cn.rtast.mvnrepo.routings.configureRepositoryRouting
 import cn.rtast.mvnrepo.util.file.AccountManager
+import cn.rtast.mvnrepo.util.file.ArtifactManager
 import cn.rtast.mvnrepo.util.initDatabase
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 
 val accountManager = AccountManager()
+val artifactManager = ArtifactManager()
 val logger: Logger = LoggerFactory.getLogger("MVNRepository")
 
 suspend fun main(args: Array<String>) {
@@ -49,6 +52,7 @@ fun Application.module() {
     configureUserAPIRouting()
     configureIndexRouting()
     configureAppStatusAPIRouting()
+    configurePackageStatisticsAPIRouting()
 }
 
 suspend fun initializeDatabase(token: String) {
