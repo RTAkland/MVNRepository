@@ -9,12 +9,10 @@ package cn.rtast.mvnrepo.routings.api
 
 import cn.rtast.mvnrepo.accountManager
 import cn.rtast.mvnrepo.entity.api.DeleteAccount
-import cn.rtast.mvnrepo.entity.api.NoSensitiveAccount
 import cn.rtast.mvnrepo.entity.api.PostAddAccount
 import cn.rtast.mvnrepo.entity.api.ResponseMessage
 import cn.rtast.mvnrepo.util.str.fromJson
 import cn.rtast.mvnrepo.util.str.toJson
-import cn.rtast.mvnrepo.util.toFormattedDate
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -61,34 +59,6 @@ fun Application.configureUserAPIRouting() {
                 } else {
                     accountManager.deleteAccount(account.username)
                     call.respondText(ResponseMessage(200, "账户删除成功").toJson())
-                }
-            }
-        }
-
-        get("/-/api/user") {
-            val username = call.parameters["username"]
-            if (username == null) {
-                call.respondText(
-                    ResponseMessage(404, "账户不存在").toJson(),
-                    status = HttpStatusCode.NotFound
-                )
-            } else {
-                val account = accountManager.getAccount(username)
-                if (account == null) {
-                    call.respondText(
-                        ResponseMessage(404, "账户不存在").toJson(),
-                        status = HttpStatusCode.NotFound
-                    )
-                } else {
-                    val noSensitiveAccount = NoSensitiveAccount(
-                        "查询成功", 200,
-                        NoSensitiveAccount.Account(
-                            account.username,
-                            account.createAt.toFormattedDate(),
-                            account.enabled
-                        )
-                    )
-                    call.respondText(noSensitiveAccount.toJson())
                 }
             }
         }

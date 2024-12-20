@@ -5,11 +5,12 @@
  */
 
 
-package cn.rtast.mvnrepo.util
+package cn.rtast.mvnrepo.util.file
 
 import cn.rtast.mvnrepo.db.ArtifactTable
 import cn.rtast.mvnrepo.entity.PackageStructure
 import cn.rtast.mvnrepo.entity.api.DeleteArtifact
+import cn.rtast.mvnrepo.util.suspendedTransaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere

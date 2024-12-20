@@ -11,7 +11,7 @@ import cn.rtast.mvnrepo.routings.api.configureRepositoryAPIRouting
 import cn.rtast.mvnrepo.routings.api.configureUserAPIRouting
 import cn.rtast.mvnrepo.routings.configureIndexRouting
 import cn.rtast.mvnrepo.routings.configureRepositoryRouting
-import cn.rtast.mvnrepo.util.AccountManager
+import cn.rtast.mvnrepo.util.file.AccountManager
 import cn.rtast.mvnrepo.util.initDatabase
 import io.ktor.server.application.*
 import io.ktor.server.engine.*

@@ -1,5 +1,6 @@
 plugins {
-    kotlin("jvm") version "2.1.0"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.node)
 }
 
 val appVersion: String by project
@@ -7,6 +8,7 @@ val appVersion: String by project
 allprojects {
     apply {
         apply(plugin = "org.jetbrains.kotlin.jvm")
+        apply(plugin = "com.github.node-gradle.node")
     }
 
     group = "cn.rtast"
