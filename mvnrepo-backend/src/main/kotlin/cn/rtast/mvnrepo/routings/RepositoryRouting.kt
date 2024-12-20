@@ -47,8 +47,9 @@ fun Application.configureRepositoryRouting() {
         authenticate("authenticate") {
             REPOSITORIES.forEach {
                 put(Regex("/$it/(.*)")) {
+                    val authedUser = call.principal<UserIdPrincipal>()?.name!!
                     val packageStructure = parsePUTPackage(call)
-                    storagePackage(packageStructure)
+                    storagePackage(packageStructure, authedUser)
                     call.respond(HttpStatusCode.OK)
                 }
             }
@@ -91,7 +92,7 @@ suspend fun parsePUTPackage(call: ApplicationCall): PackageStructure {
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-fun storagePackage(structure: PackageStructure) {
+suspend fun storagePackage(structure: PackageStructure, createBy: String) {
     val repositoryPath = File(STORAGE_PATH, structure.repository)
     val groupPath = File(repositoryPath, structure.artifactGroup)
     val artifactPath = File(groupPath, structure.artifactId)
@@ -127,5 +128,8 @@ fun storagePackage(structure: PackageStructure) {
             )
         )
         mavenMetadataFile.writeText(metadata.toXMLString())
+    }
+    if (structure.artifactName.endsWith(".jar")) {
+        artifactManager.addOrUpdateArtifact(structure, createBy)
     }
 }

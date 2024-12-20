@@ -1,3 +1,5 @@
 # MVNRepository
 
-构建完成之后使用 -p 指定端口, 默认8088, -t 指定第一次生成的token, 默认为随机UUID, 只需要在第一次启动的时候 指定
+使用文档: [https://docs.rtast.cn/#/docs/mvnrepo/MVNRepo](https://docs.rtast.cn/#/docs/mvnrepo/MVNRepo)
+
+API文档： [https://docs.rtast.cn/#/docs/mvnrepo/MVNRepoAPI](https://docs.rtast.cn/#/docs/mvnrepo/MVNRepoAPI)

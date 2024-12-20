@@ -9,13 +9,15 @@ package cn.rtast.mvnrepo.routings.api
 
 import cn.rtast.mvnrepo.REPOSITORIES
 import cn.rtast.mvnrepo.STORAGE_PATH
+import cn.rtast.mvnrepo.artifactManager
+import cn.rtast.mvnrepo.entity.api.APIArtifactSearchResult
 import cn.rtast.mvnrepo.entity.api.DeleteArtifact
 import cn.rtast.mvnrepo.entity.api.ListingFile
 import cn.rtast.mvnrepo.entity.api.ResponseMessage
 import cn.rtast.mvnrepo.util.deleteDirectory
 import cn.rtast.mvnrepo.util.str.fromJson
 import cn.rtast.mvnrepo.util.str.toJson
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -56,6 +58,22 @@ fun Application.configureRepositoryAPIRouting() {
                         call.respondText(listingFile.toJson())
                     }
                 }
+            }
+        }
+
+        get("/-/api/artifacts/search") {
+            val keywordOfArtifactId = call.parameters["artifactId"] ?: call.parameters["artifact"]
+            if (keywordOfArtifactId == null) {
+                call.respondText(
+                    ResponseMessage(404, "请添加`artifactId`参数来查询").toJson(),
+                    status = HttpStatusCode.NotFound
+                )
+            } else {
+                val result = artifactManager.searchArtifact(keywordOfArtifactId)
+                val response = APIArtifactSearchResult(
+                    "搜索到${result.size}个结果", 200, result.size, result
+                ).toJson()
+                call.respondText(response)
             }
         }
     }

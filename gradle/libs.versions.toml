@@ -4,7 +4,7 @@ kotlin = "2.1.0"
 node = "3.2.1"
 ktor-plugin = "3.0.2"
 exposed = "0.57.0"
-h2 = "2.3.232"
+sqlite = "3.47.1.0"
 logback = "1.4.14"
 gson = "2.11.0"
 jackson = "2.18.2"
@@ -19,7 +19,7 @@ ktor-server-content-negotiation = { group = "io.ktor", name = "ktor-server-conte
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
 exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposed" }
 exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposed" }
-h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
+sqlite-jdbc = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite" }
 logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 jackson-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }

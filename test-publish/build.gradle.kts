@@ -26,7 +26,7 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             artifact(sourceJar)
-            artifactId = "test-publish-3"
+            artifactId = "test-publish-4"
             version = testPublishVersion
         }
     }
@@ -37,7 +37,7 @@ publishing {
             isAllowInsecureProtocol = true
             credentials {
                 username = "admin"
-                password = "0db30555-988e-41c2-b1f6-6d9fa9ce876b"
+                password = "99efa089-1154-479c-9da7-e7e40ba9dcfb"
             }
         }
     }
