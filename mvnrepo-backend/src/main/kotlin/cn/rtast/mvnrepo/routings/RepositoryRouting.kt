@@ -21,7 +21,6 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.ExperimentalSerializationApi
 import java.io.File
 import java.time.Instant
 
@@ -99,7 +98,6 @@ suspend fun parsePUTPackage(call: ApplicationCall): PackageStructure {
     return PackageStructure(packageGroup, artifactId, packageVersion, jarName, repository, fileBytes)
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 suspend fun storagePackage(structure: PackageStructure, createBy: String) {
     val repositoryPath = File(STORAGE_PATH, structure.repository)
     val groupPath = File(repositoryPath, structure.artifactGroup)
