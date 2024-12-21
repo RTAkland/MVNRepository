@@ -9,9 +9,16 @@ package cn.rtast.mvnrepo.util.file
 
 import cn.rtast.mvnrepo.db.ArtifactDownloadCountTable
 import cn.rtast.mvnrepo.db.ArtifactTable
+import cn.rtast.mvnrepo.db.ArtifactTable.artifactId
+import cn.rtast.mvnrepo.db.ArtifactTable.createdBy
+import cn.rtast.mvnrepo.db.ArtifactTable.groupId
+import cn.rtast.mvnrepo.db.ArtifactTable.lastUpdated
+import cn.rtast.mvnrepo.db.ArtifactTable.repository
+import cn.rtast.mvnrepo.db.ArtifactTable.version
 import cn.rtast.mvnrepo.entity.PackageStructure
 import cn.rtast.mvnrepo.entity.api.PackageStatistics
-import cn.rtast.mvnrepo.entity.db.ArtifactSearchResult
+import cn.rtast.mvnrepo.entity.db.DBSearchResult
+import cn.rtast.mvnrepo.enums.SearchType
 import cn.rtast.mvnrepo.util.suspendedTransaction
 import org.jetbrains.exposed.sql.*
 import java.time.Instant
@@ -66,53 +73,49 @@ class ArtifactManager {
 
     suspend fun addOrUpdateArtifact(packageStructure: PackageStructure, createBy: String) {
         suspendedTransaction {
-            val ifExists = ArtifactTable.selectAll()
-                .where {
-                    (ArtifactTable.artifactId eq packageStructure.artifactId)
-                        .and { ArtifactTable.repository eq packageStructure.repository }
-                        .and { ArtifactTable.groupId eq packageStructure.artifactGroup }
-                        .and { ArtifactTable.version eq packageStructure.artifactVersion }
-                }.singleOrNull()
-            if (ifExists == null) {
-                ArtifactTable.insert {
-                    it[groupId] = packageStructure.artifactGroup
-                    it[version] = packageStructure.artifactVersion
-                    it[repository] = packageStructure.repository
-                    it[artifactId] = packageStructure.artifactId
-                    it[createdBy] = createBy
-                    it[lastUpdated] = Instant.now().epochSecond
-                }
-            } else {
-                ArtifactTable.update({
-                    (ArtifactTable.artifactId eq packageStructure.artifactId)
-                        .and { ArtifactTable.repository eq packageStructure.repository }
-                        .and { ArtifactTable.groupId eq packageStructure.artifactGroup }
-                        .and { ArtifactTable.version eq packageStructure.artifactVersion }
-                        .and { ArtifactTable.createdBy eq createBy }
-                }) {
-                    it[artifactId] = packageStructure.artifactId
-                    it[version] = packageStructure.artifactVersion
-                    it[groupId] = packageStructure.artifactGroup
-                    it[repository] = packageStructure.repository
-                    it[createdBy] = createBy
-                    it[lastUpdated] = Instant.now().epochSecond
-                }
+            ArtifactTable.upsert(version, repository, groupId, artifactId, onUpdate = { stat ->
+                stat[groupId] = packageStructure.artifactGroup
+                stat[artifactId] = packageStructure.artifactId
+                stat[repository] = packageStructure.repository
+                stat[createdBy] = createBy
+                stat[lastUpdated] = Instant.now().epochSecond
+            }) {
+                it[groupId] = packageStructure.artifactGroup
+                it[artifactId] = packageStructure.artifactId
+                it[repository] = packageStructure.repository
+                it[version] = packageStructure.artifactVersion
+                it[createdBy] = createBy
+                it[lastUpdated] = Instant.now().epochSecond
             }
         }
     }
 
-    suspend fun searchArtifact(artifactId: String): List<ArtifactSearchResult> {
+    suspend fun searchByArtifact(keyword: String, searchType: SearchType): List<DBSearchResult> {
         return suspendedTransaction {
-            val result = ArtifactTable.selectAll().where {
-                ArtifactTable.artifactId like "%$artifactId%"
+            val result = when (searchType) {
+                SearchType.ArtifactId -> ArtifactTable.selectAll().where {
+                    artifactId like "%$keyword%"
+                }
+
+                SearchType.GroupId -> ArtifactTable.selectAll().where {
+                    groupId like "%$keyword%"
+                }
+
+                SearchType.Version -> ArtifactTable.selectAll().where {
+                    version like "%$keyword%"
+                }
+
+                SearchType.Repository -> ArtifactTable.selectAll().where {
+                    repository like "%$keyword%"
+                }
             }.map {
-                ArtifactSearchResult(
-                    it[ArtifactTable.groupId],
-                    it[ArtifactTable.artifactId],
-                    it[ArtifactTable.repository],
-                    it[ArtifactTable.createdBy],
-                    it[ArtifactTable.lastUpdated],
-                    it[ArtifactTable.version]
+                DBSearchResult(
+                    it[groupId],
+                    it[artifactId],
+                    it[repository],
+                    it[createdBy],
+                    it[lastUpdated],
+                    it[version]
                 )
             }
             return@suspendedTransaction result

@@ -19,4 +19,8 @@ object ArtifactTable : Table("artifacts") {
     val lastUpdated = long("last_updated")
 
     override val primaryKey = PrimaryKey(id)
+
+    init {
+        uniqueIndex(groupId, artifactId, repository, version)
+    }
 }

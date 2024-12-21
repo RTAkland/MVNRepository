@@ -15,6 +15,7 @@ import cn.rtast.mvnrepo.entity.api.APIArtifactSearchResult
 import cn.rtast.mvnrepo.entity.api.DeleteArtifact
 import cn.rtast.mvnrepo.entity.api.ListingFile
 import cn.rtast.mvnrepo.entity.api.ResponseMessage
+import cn.rtast.mvnrepo.enums.SearchType
 import cn.rtast.mvnrepo.util.deleteDirectory
 import cn.rtast.mvnrepo.util.str.fromJson
 import cn.rtast.mvnrepo.util.str.toJson
@@ -46,19 +47,28 @@ fun Application.configureRepositoryAPIRouting() {
             }
 
             get("/-/api/artifacts/search") {
-                val keywordOfArtifactId = call.parameters["artifactId"] ?: call.parameters["artifact"]
-                if (keywordOfArtifactId == null) {
+                val keyword = call.parameters["keyword"]
+                val type = call.parameters["type"]
+                if (keyword == null) {
                     call.respondText(
-                        ResponseMessage(404, "请添加`artifactId`参数来查询").toJson(),
+                        ResponseMessage(404, "请添加`keyword`参数").toJson(),
                         status = HttpStatusCode.NotFound
                     )
-                } else {
-                    val result = artifactManager.searchArtifact(keywordOfArtifactId)
-                    val response = APIArtifactSearchResult(
-                        "搜索到${result.size}个结果", 200, result.size, result
-                    ).toJson()
-                    call.respondText(response)
+                    return@get
                 }
+                val searchType = SearchType.fromString(type)
+                if (searchType == null || type == null) {
+                    call.respondText(
+                        ResponseMessage(404, "请添加`type`参数").toJson(),
+                        status = HttpStatusCode.NotFound
+                    )
+                    return@get
+                }
+                val result = artifactManager.searchByArtifact(keyword, searchType)
+                val response = APIArtifactSearchResult(
+                    "搜索到${result.size}个结果", 200, result.size, result
+                ).toJson()
+                call.respondText(response)
             }
         }
 
@@ -90,7 +100,7 @@ private suspend fun serveFile(call: ApplicationCall, repo: String) {
         val files = file.listFiles()?.map {
             ListingFile.Files(it.name, it.isDirectory)
         } ?: emptyList()
-        val listingFile = ListingFile("查询成功",files.size, files)
+        val listingFile = ListingFile("查询成功", files.size, files)
         call.respondText(listingFile.toJson())
     }
 }

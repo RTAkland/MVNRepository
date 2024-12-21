@@ -7,7 +7,7 @@
 
 package cn.rtast.mvnrepo.entity.db
 
-data class ArtifactSearchResult(
+data class DBSearchResult(
     val groupId: String,
     val artifactId: String,
     val repository: String,

@@ -7,11 +7,11 @@
 
 package cn.rtast.mvnrepo.entity.api
 
-import cn.rtast.mvnrepo.entity.db.ArtifactSearchResult
+import cn.rtast.mvnrepo.entity.db.DBSearchResult
 
 data class APIArtifactSearchResult(
     val message: String,
     val code: Int,
     val count: Int,
-    val data: List<ArtifactSearchResult>
+    val data: List<DBSearchResult>
 )
