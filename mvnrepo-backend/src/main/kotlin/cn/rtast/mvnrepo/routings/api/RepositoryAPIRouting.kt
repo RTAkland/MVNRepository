@@ -44,6 +44,22 @@ fun Application.configureRepositoryAPIRouting() {
                     serveFile(call, it)
                 }
             }
+
+            get("/-/api/artifacts/search") {
+                val keywordOfArtifactId = call.parameters["artifactId"] ?: call.parameters["artifact"]
+                if (keywordOfArtifactId == null) {
+                    call.respondText(
+                        ResponseMessage(404, "请添加`artifactId`参数来查询").toJson(),
+                        status = HttpStatusCode.NotFound
+                    )
+                } else {
+                    val result = artifactManager.searchArtifact(keywordOfArtifactId)
+                    val response = APIArtifactSearchResult(
+                        "搜索到${result.size}个结果", 200, result.size, result
+                    ).toJson()
+                    call.respondText(response)
+                }
+            }
         }
 
         REPOSITORIES.forEach {
@@ -61,22 +77,6 @@ fun Application.configureRepositoryAPIRouting() {
                         ListingFile.Files(it, true)
                     }).toJson()
             )
-        }
-
-        get("/-/api/artifacts/search") {
-            val keywordOfArtifactId = call.parameters["artifactId"] ?: call.parameters["artifact"]
-            if (keywordOfArtifactId == null) {
-                call.respondText(
-                    ResponseMessage(404, "请添加`artifactId`参数来查询").toJson(),
-                    status = HttpStatusCode.NotFound
-                )
-            } else {
-                val result = artifactManager.searchArtifact(keywordOfArtifactId)
-                val response = APIArtifactSearchResult(
-                    "搜索到${result.size}个结果", 200, result.size, result
-                ).toJson()
-                call.respondText(response)
-            }
         }
     }
 }
