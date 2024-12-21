@@ -8,10 +8,9 @@ node {
 val buildTask = tasks.register<NpmTask>("buildFrontend") {
     args.set(listOf("run", "build"))
     dependsOn(tasks.npmInstall)
-    inputs.dir(project.fileTree("src"))
+    inputs.dir(project.fileTree("docs"))
     inputs.dir("node_modules")
-    inputs.files("vite.config.js", "index.html")
-    val distDir = file(project.layout.projectDirectory.dir("dist"))
+    val distDir = file(project.layout.projectDirectory.dir("docs/.vitepress/dist"))
     val generatedDir = file(project(":mvnrepo-backend").layout.buildDirectory.dir("generated"))
     outputs.dir(distDir)
     doLast {

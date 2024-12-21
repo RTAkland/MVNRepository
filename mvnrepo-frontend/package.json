@@ -1,19 +1,24 @@
 {
-  "name": "mvnrepo-frontend",
-  "version": "0.0.0",
+  "name": "MVNRepo",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "vue": "^3.5.13"
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "serve": "vitepress serve docs"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^6.0.3",
-    "vite-plugin-vue-devtools": "^7.6.5"
+    "vitepress": "1.0.0-alpha.28",
+    "vue": "3.2.44"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search"
+      ]
+    }
+  },
+  "dependencies": {
+    "mdjs": "^0.1.10"
   }
 }
