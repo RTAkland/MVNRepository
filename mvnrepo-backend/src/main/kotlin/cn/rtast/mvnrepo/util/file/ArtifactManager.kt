@@ -108,6 +108,10 @@ class ArtifactManager {
                 SearchType.Repository -> ArtifactTable.selectAll().where {
                     repository like "%$keyword%"
                 }
+
+                SearchType.Author -> ArtifactTable.selectAll().where {
+                    createdBy like "%$keyword%"
+                }
             }.map {
                 DBSearchResult(
                     it[groupId],

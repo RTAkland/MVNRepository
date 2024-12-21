@@ -8,7 +8,7 @@
 package cn.rtast.mvnrepo.enums
 
 enum class SearchType {
-    ArtifactId, GroupId, Version, Repository;
+    ArtifactId, GroupId, Version, Repository, Author;
 
     companion object {
         fun fromString(value: String?): SearchType? {
@@ -17,6 +17,7 @@ enum class SearchType {
                 "groupId" -> GroupId
                 "version" -> Version
                 "repository" -> Repository
+                "author" -> Author
                 else -> null
             }
         }
