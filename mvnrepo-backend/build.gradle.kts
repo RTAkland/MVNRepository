@@ -42,7 +42,7 @@ tasks.named("processResources") {
 tasks.processResources {
     dependsOn(project(":mvnrepo-frontend").tasks.named("buildFrontend"))
     doLast {
-        val generatedDir = file(project(":mvnrepo-frontend").layout.projectDirectory.dir("docs/.vitepress/dist"))
+        val generatedDir = file(project(":mvnrepo-frontend").layout.projectDirectory.dir("src"))
         val staticDir = file(project(":mvnrepo-backend").layout.buildDirectory.dir("generated"))
         staticDir.deleteRecursively()
         generatedDir.copyRecursively(staticDir, overwrite = true)
