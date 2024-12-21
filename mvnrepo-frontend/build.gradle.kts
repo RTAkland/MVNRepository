@@ -11,6 +11,7 @@ val buildTask = tasks.register<NpmTask>("buildFrontend") {
     inputs.dir(project.fileTree("src"))
     inputs.dir("node_modules")
     inputs.files("vite.config.js", "index.html")
+    outputs.dir("mvnrepo-frontend")
     doLast {
         val distDir = file(project.layout.projectDirectory.dir("dist"))
         val generatedDir = file(project(":mvnrepo-backend").layout.buildDirectory.dir("generated"))

@@ -30,3 +30,4 @@ coverage
 *.tsbuildinfo
 
 node_modules/
+mvnrepo-frontend/
