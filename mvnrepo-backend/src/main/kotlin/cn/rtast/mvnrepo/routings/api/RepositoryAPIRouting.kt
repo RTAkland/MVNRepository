@@ -42,7 +42,7 @@ fun Application.configureRepositoryAPIRouting() {
 
             PRIVATE_REPOSITORIES.forEach {
                 get(Regex("/-/api/artifacts/$it/(.*)")) {
-                    serveFile(call, it)
+                    call.listingFiles(it)
                 }
             }
 
@@ -74,7 +74,7 @@ fun Application.configureRepositoryAPIRouting() {
 
         REPOSITORIES.forEach {
             get(Regex("/-/api/artifacts/$it/(.*)")) {
-                serveFile(call, it)
+                call.listingFiles(it)
             }
         }
 
@@ -91,17 +91,17 @@ fun Application.configureRepositoryAPIRouting() {
     }
 }
 
-private suspend fun serveFile(call: ApplicationCall, repo: String) {
-    val path = call.request.uri.replace("/-/api/artifacts/$repo/", "/$repo/")
-    val takeLimit = call.parameters["limit"]?.toInt() ?: 100
+private suspend fun ApplicationCall.listingFiles(repo: String) {
+    val path = this.request.uri.split("?").first().replace("/-/api/artifacts/$repo/", "/$repo/")
+    val takeLimit = this.parameters["limit"]?.toInt() ?: 100
     val file = File(STORAGE_PATH, path)
     if (file.isFile) {
-        call.respondFile(file)
+        this.respondFile(file)
     } else {
         val files = file.listFiles()?.asSequence()?.take(takeLimit)?.toList()?.map {
             ListingFile.Files(it.name, it.isDirectory)
         } ?: emptyList()
         val listingFile = ListingFile("查询成功", files.size, files)
-        call.respondText(listingFile.toJson())
+        this.respondText(listingFile.toJson())
     }
 }
