@@ -35,6 +35,11 @@
         .back-link:hover {
             text-decoration: underline;
         }
+
+        .file-size {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
@@ -71,6 +76,19 @@
         return localStorage.getItem('access_token');
     }
 
+    function formatFileSize(size) {
+        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        let unitIndex = 0;
+        let sizeInUnit = size;
+
+        while (sizeInUnit >= 1024 && unitIndex < units.length - 1) {
+            sizeInUnit /= 1024;
+            unitIndex++;
+        }
+
+        return `${sizeInUnit.toFixed(2)} ${units[unitIndex]}`;
+    }
+
     function loadArtifacts(path = '') {
         currentPath = path;
         const breadcrumb = document.getElementById('breadcrumb');
@@ -103,7 +121,8 @@
                     if (item.isDirectory) {
                         div.innerHTML = `<span class="folder" onclick="loadArtifacts('${path ? path + '/' + item.name : item.name}')">${item.name}</span>`;
                     } else {
-                        div.innerHTML = `<span class="file" onclick="downloadFile('${path ? path + '/' + item.name : item.name}')">${item.name}</span>`;
+                        const fileSize = item.size ? `<span class="file-size">(${formatFileSize(item.size)})</span>` : '';
+                        div.innerHTML = `<span class="file" onclick="downloadFile('${path ? path + '/' + item.name : item.name}')">${item.name}</span> ${fileSize}`;
                     }
                     artifactList.appendChild(div);
                 });

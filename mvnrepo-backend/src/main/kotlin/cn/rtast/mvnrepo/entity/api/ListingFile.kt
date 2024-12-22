@@ -14,6 +14,7 @@ data class ListingFile(
 ) {
     data class Files(
         val name: String,
-        val isDirectory: Boolean
+        val isDirectory: Boolean,
+        val size: Long,
     )
 }

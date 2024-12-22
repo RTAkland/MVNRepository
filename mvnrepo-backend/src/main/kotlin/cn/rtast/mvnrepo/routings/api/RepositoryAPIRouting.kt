@@ -84,7 +84,7 @@ fun Application.configureRepositoryAPIRouting() {
                     "查询成功",
                     (REPOSITORIES + PRIVATE_REPOSITORIES).size,
                     (REPOSITORIES + PRIVATE_REPOSITORIES).map {
-                        ListingFile.Files(it, true)
+                        ListingFile.Files(it, true, 0)
                     }).toJson()
             )
         }
@@ -99,7 +99,7 @@ private suspend fun ApplicationCall.listingFiles(repo: String) {
         this.respondFile(file)
     } else {
         val files = file.listFiles()?.asSequence()?.take(takeLimit)?.toList()?.map {
-            ListingFile.Files(it.name, it.isDirectory)
+            ListingFile.Files(it.name, it.isDirectory, it.length())
         } ?: emptyList()
         val listingFile = ListingFile("查询成功", files.size, files)
         this.respondText(listingFile.toJson())
