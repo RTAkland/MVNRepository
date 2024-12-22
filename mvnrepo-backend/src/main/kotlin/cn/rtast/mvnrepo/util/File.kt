@@ -7,6 +7,9 @@
 
 package cn.rtast.mvnrepo.util
 
+import io.ktor.http.ContentType
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respondText
 import java.io.File
 
 
@@ -20,4 +23,9 @@ fun deleteDirectory(file: File): Boolean {
         }
     }
     return file.delete()
+}
+
+suspend fun ApplicationCall.respondHTMLResources(path: String) {
+    val resourcesFileText = String(javaClass.getResourceAsStream(path)!!.readBytes())
+    this.respondText(contentType = ContentType.Text.Html, text = resourcesFileText)
 }

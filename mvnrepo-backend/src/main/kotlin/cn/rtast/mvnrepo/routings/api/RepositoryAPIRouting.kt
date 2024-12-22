@@ -93,11 +93,12 @@ fun Application.configureRepositoryAPIRouting() {
 
 private suspend fun serveFile(call: ApplicationCall, repo: String) {
     val path = call.request.uri.replace("/-/api/artifacts/$repo/", "/$repo/")
+    val takeLimit = call.parameters["limit"]?.toInt() ?: 100
     val file = File(STORAGE_PATH, path)
     if (file.isFile) {
         call.respondFile(file)
     } else {
-        val files = file.listFiles()?.map {
+        val files = file.listFiles()?.asSequence()?.take(takeLimit)?.toList()?.map {
             ListingFile.Files(it.name, it.isDirectory)
         } ?: emptyList()
         val listingFile = ListingFile("查询成功", files.size, files)
