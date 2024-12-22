@@ -29,7 +29,7 @@ import java.io.File
 
 fun Application.configureRepositoryAPIRouting() {
     routing {
-        authenticate("authenticate") {
+        authenticate("auth-jwt") {
             delete("/-/api/artifacts") {
                 val artifact = call.receiveText().fromJson<DeleteArtifact>()
                 val filePath = File(

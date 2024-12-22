@@ -3,7 +3,7 @@ plugins {
     id("maven-publish")
 }
 
-val testPublishVersion: String by project
+val testPublishVersion = "0.0.2"
 
 group = "cn.rtast"
 version = testPublishVersion
@@ -26,7 +26,7 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
             artifact(sourceJar)
-            artifactId = "test-publish-4"
+            artifactId = "test-publish-5"
             version = testPublishVersion
         }
     }

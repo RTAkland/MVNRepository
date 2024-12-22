@@ -13,9 +13,12 @@ import cn.rtast.mvnrepo.entity.PackageStructure
 import cn.rtast.mvnrepo.util.str.fromXML
 import cn.rtast.mvnrepo.util.str.toXMLString
 import cn.rtast.mvnrepo.util.toMavenFormatedDate
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.autohead.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
@@ -35,6 +38,12 @@ fun Application.configureRepositoryRouting() {
                 } else {
                     null
                 }
+            }
+        }
+        jwt("auth-jwt") {
+            verifier(JWT.require(Algorithm.HMAC256(JWT_SECRET)).withAudience("mvnrepo").build())
+            validate { credential ->
+                if (credential.payload.audience.contains("mvnrepo")) JWTPrincipal(credential.payload) else null
             }
         }
     }

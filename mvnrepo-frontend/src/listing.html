@@ -45,17 +45,51 @@
     <a href="/">返回主页</a>
 </div>
 
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">未登录</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>您还没有登录，请先登录</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="redirectToLogin()">去登录</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const apiUrl = '/-/api/artifacts';
     let currentPath = '';
+
+    function getAccessToken() {
+        return localStorage.getItem('access_token');
+    }
 
     function loadArtifacts(path = '') {
         currentPath = path;
         const breadcrumb = document.getElementById('breadcrumb');
         breadcrumb.innerHTML = `当前位置: /${path || ''}`;
 
-        fetch(`${apiUrl}${path ? `/${path}/` : ''}`)
-            .then(response => response.json())
+        const headers = {};
+        const token = getAccessToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        fetch(`${apiUrl}${path ? `/${path}/` : ''}`, { headers })
+            .then(response => {
+                if (response.status === 401) {
+                    showLoginModal();
+                    throw new Error('Unauthorized');
+                }
+                return response.json();
+            })
             .then(data => {
                 const artifactList = document.getElementById('artifact-list');
                 artifactList.innerHTML = '';
@@ -75,8 +109,15 @@
                 });
             })
             .catch(error => {
-                console.error('Error loading artifacts:', error);
+                if (error.message !== 'Unauthorized') {
+                    console.error('Error loading artifacts:', error);
+                }
             });
+    }
+
+    function showLoginModal() {
+        const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
     }
 
     function goBack() {
@@ -89,6 +130,11 @@
     function downloadFile(filePath) {
         window.location.href = `${apiUrl}/${filePath}`;
     }
+
+    function redirectToLogin() {
+        window.location.href = '/';
+    }
+
     loadArtifacts();
 </script>
 </body>

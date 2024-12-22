@@ -11,5 +11,5 @@ repositories {
 }
 
 dependencies {
-    implementation("cn.rtast:test-publish-4:0.0.1")
+    implementation("cn.rtast:test-publish-5:0.0.1")
 }

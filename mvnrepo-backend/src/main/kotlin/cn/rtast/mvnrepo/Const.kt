@@ -17,6 +17,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.io.File
+import java.util.UUID
 
 val gson: Gson = GsonBuilder()
     .disableHtmlEscaping()
@@ -38,3 +39,5 @@ val xmlMapper = XmlMapper(XmlFactory().apply {
     enable(SerializationFeature.INDENT_OUTPUT)
     registerModule(SimpleModule())
 }
+
+val JWT_SECRET = UUID.randomUUID().toString()

@@ -7,7 +7,7 @@
 
 package cn.rtast.mvnrepo.entity.api
 
-data class PostAddAccount(
+data class UserAccount(
     val username: String,
     val password: String
 )
