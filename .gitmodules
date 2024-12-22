@@ -1,6 +1,3 @@
 [submodule "docs"]
 	path = docs
 	url = git@github.com:RTAkland/docs.git
-[submodule "mvnrepo-frontend/themes/linkita"]
-	path = mvnrepo-frontend/themes/linkita
-	url = https://codeberg.org/salif/linkita.git
