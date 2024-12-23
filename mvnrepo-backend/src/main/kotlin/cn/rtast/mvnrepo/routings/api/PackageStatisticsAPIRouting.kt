@@ -19,9 +19,9 @@ import io.ktor.server.routing.*
 
 fun Application.configurePackageStatisticsAPIRouting() {
     routing {
-        authenticate("authenticate") {
+        authenticate("auth-jwt") {
             get("/-/api/statistics") {
-                val groupId =(call.parameters["groupId"] ?: call.parameters["group"])?.replace(".", "/")
+                val groupId = (call.parameters["groupId"] ?: call.parameters["group"])?.replace(".", "/")
                 val repository = call.parameters["repository"] ?: call.parameters["repo"]
                 val artifactId = call.parameters["artifactId"] ?: call.parameters["artifact"]
                 if (groupId == null || repository == null || artifactId == null) {
@@ -37,13 +37,13 @@ fun Application.configurePackageStatisticsAPIRouting() {
                             status = HttpStatusCode.NotFound
                         )
                     } else {
-                        call.respondText(
+                        call.respond(
                             PackageStatistics(
                                 result.group,
                                 result.artifactId,
                                 result.repository,
                                 result.downloadCount
-                            ).toJson()
+                            )
                         )
                     }
                 }

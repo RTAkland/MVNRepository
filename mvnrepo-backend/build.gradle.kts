@@ -10,6 +10,7 @@ application {
 }
 
 dependencies {
+    implementation(libs.sqlite.jdbc)
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
     implementation(libs.logback.classic)
@@ -25,7 +26,7 @@ dependencies {
     implementation(libs.ktor.server.resources)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.netty)
-    implementation(libs.sqlite.jdbc)
+    implementation(libs.ktor.serialization.gson)
 }
 
 sourceSets {

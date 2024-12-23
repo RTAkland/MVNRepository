@@ -16,8 +16,8 @@ import cn.rtast.mvnrepo.entity.api.DeleteArtifact
 import cn.rtast.mvnrepo.entity.api.ListingFile
 import cn.rtast.mvnrepo.entity.api.ResponseMessage
 import cn.rtast.mvnrepo.enums.SearchType
+import cn.rtast.mvnrepo.registry.listingFiles
 import cn.rtast.mvnrepo.util.deleteDirectory
-import cn.rtast.mvnrepo.util.str.fromJson
 import cn.rtast.mvnrepo.util.str.toJson
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -31,13 +31,13 @@ fun Application.configureRepositoryAPIRouting() {
     routing {
         authenticate("auth-jwt") {
             delete("/-/api/artifacts") {
-                val artifact = call.receiveText().fromJson<DeleteArtifact>()
+                val artifact = call.receive<DeleteArtifact>()
                 val filePath = File(
                     STORAGE_PATH,
                     "${artifact.repository}/${artifact.groupId.replace(".", "/")}/${artifact.artifactId}"
                 )
                 deleteDirectory(filePath)
-                call.respondText(ResponseMessage(200, "已删除: ${artifact.artifactId}").toJson())
+                call.respond(ResponseMessage(200, "已删除: ${artifact.artifactId}"))
             }
 
             PRIVATE_REPOSITORIES.forEach {
@@ -79,29 +79,14 @@ fun Application.configureRepositoryAPIRouting() {
         }
 
         get("/-/api/artifacts") {
-            call.respondText(
+            call.respond(
                 ListingFile(
                     "查询成功",
                     (REPOSITORIES + PRIVATE_REPOSITORIES).size,
                     (REPOSITORIES + PRIVATE_REPOSITORIES).map {
                         ListingFile.Files(it, true, 0)
-                    }).toJson()
+                    })
             )
         }
-    }
-}
-
-private suspend fun ApplicationCall.listingFiles(repo: String) {
-    val path = this.request.uri.split("?").first().replace("/-/api/artifacts/$repo/", "/$repo/")
-    val takeLimit = this.parameters["limit"]?.toInt() ?: 100
-    val file = File(STORAGE_PATH, path)
-    if (file.isFile) {
-        this.respondFile(file)
-    } else {
-        val files = file.listFiles()?.asSequence()?.take(takeLimit)?.toList()?.map {
-            ListingFile.Files(it.name, it.isDirectory, it.length())
-        } ?: emptyList()
-        val listingFile = ListingFile("查询成功", files.size, files)
-        this.respondText(listingFile.toJson())
     }
 }
