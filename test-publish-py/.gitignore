@@ -1,0 +1,5 @@
+test-publish-py.iml
+build/
+dist/
+.venv/
+my_package.egg-info/

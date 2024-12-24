@@ -13,6 +13,7 @@ import cn.rtast.mvnrepo.routings.api.configureRepositoryAPIRouting
 import cn.rtast.mvnrepo.routings.api.configureUserAPIRouting
 import cn.rtast.mvnrepo.routings.configureIndexRouting
 import cn.rtast.mvnrepo.routings.configureMavenRepositoryRouting
+import cn.rtast.mvnrepo.routings.configurePypiRepositoryRouting
 import cn.rtast.mvnrepo.util.file.AccountManager
 import cn.rtast.mvnrepo.util.file.ArtifactManager
 import cn.rtast.mvnrepo.util.initDatabase
@@ -47,6 +48,7 @@ suspend fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    configurePypiRepositoryRouting()
     configureMavenRepositoryRouting()
     configureRepositoryAPIRouting()
     configureUserAPIRouting()
