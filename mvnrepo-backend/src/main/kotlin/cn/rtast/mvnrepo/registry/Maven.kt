@@ -94,7 +94,7 @@ suspend fun storagePackage(structure: PackageStructure, createBy: String) {
         )
         mavenMetadataFile.writeText(metadata.toXMLString())
     }
-    if (structure.artifactName.endsWith(".jar")) {
+    if (structure.artifactName.endsWith(".jar") || structure.artifactName.endsWith("klib")) {
         artifactManager.addOrUpdateArtifact(structure, createBy)
     }
 }
