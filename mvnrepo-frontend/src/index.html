@@ -10,26 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/prism.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-kotlin.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
-    <style>
-        .code-block-container {
-            position: relative;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            cursor: pointer;
-        }
-
-        .modal-body input {
-            margin-bottom: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/index.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -102,55 +83,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    const protocol = window.location.protocol;
-    const hostname = window.location.host;
-    const baseUrl = `${protocol}//${hostname}`;
-    const releasesUrl = `${baseUrl}/releases`;
-    const snapshotsUrl = `${baseUrl}/snapshots`;
-    const privateUrl = `${baseUrl}/private`;
-    document.getElementById("releases-repo").textContent = releasesUrl;
-    document.getElementById("snapshots-repo").textContent = snapshotsUrl;
-    document.getElementById("private-repo").textContent = privateUrl;
-    Prism.highlightAll();
-    new ClipboardJS('.copy-btn');
-
-    document.getElementById('loginForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        try {
-            const response = await fetch('/-/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('登录失败');
-            }
-
-            const data = await response.json();
-            if (data.access_token) {
-                localStorage.setItem('access_token', data.access_token);
-                alert('登录成功！');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                modal.hide();
-            } else {
-                alert('登录失败，未获得有效token');
-            }
-        } catch (error) {
-            alert(error.message);
-        }
-    });
-</script>
+<script src="js/index.js"></script>
 </body>
 </html>

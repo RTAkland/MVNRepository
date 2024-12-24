@@ -1,0 +1,18 @@
+.code-block-container {
+    position: relative;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.modal-body input {
+    margin-bottom: 10px;
+}
