@@ -7,6 +7,7 @@
 
 package cn.rtast.mvnrepo.routings.api
 
+import cn.rtast.mvnrepo.STARTUP_TIME
 import cn.rtast.mvnrepo.STORAGE_PATH_
 import cn.rtast.mvnrepo.entity.api.AppStatus
 import cn.rtast.mvnrepo.entity.api.StorageOverview
@@ -15,6 +16,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.nio.file.Files
+import java.time.Instant
 import kotlin.io.path.Path
 import kotlin.io.path.fileSize
 
@@ -41,7 +43,13 @@ private fun getSystemInfo(): AppStatus {
     val osArch = System.getProperty("os.arch")
     val kotlinVersion = KotlinVersion.CURRENT.toString()
     val jvmVersion = Runtime.version().toString()
-    return AppStatus(jvmVersion, totalMemory, freeMemory, maxMemory, kotlinVersion, osName, osArch, osVersion)
+    val currentSecond = Instant.now().epochSecond
+    val uptime = currentSecond - STARTUP_TIME
+    return AppStatus(
+        jvmVersion, totalMemory, freeMemory,
+        maxMemory, kotlinVersion, osName,
+        osArch, osVersion, uptime
+    )
 }
 
 private fun calculateUsedSize(): StorageOverview {

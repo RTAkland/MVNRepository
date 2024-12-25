@@ -17,6 +17,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.io.File
+import java.time.Instant
 import java.util.UUID
 
 val gson: Gson = GsonBuilder()
@@ -41,3 +42,5 @@ val xmlMapper = XmlMapper(XmlFactory().apply {
 }
 
 val JWT_SECRET = UUID.randomUUID().toString()
+
+val STARTUP_TIME = Instant.now().epochSecond

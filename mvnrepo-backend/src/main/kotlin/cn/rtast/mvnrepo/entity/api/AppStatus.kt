@@ -16,4 +16,5 @@ data class AppStatus(
     val osName: String,
     val osArch: String,
     val osVersion: String,
+    val uptime: Long
 )
