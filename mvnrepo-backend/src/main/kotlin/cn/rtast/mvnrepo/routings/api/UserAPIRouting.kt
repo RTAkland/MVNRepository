@@ -9,15 +9,13 @@ package cn.rtast.mvnrepo.routings.api
 
 import cn.rtast.mvnrepo.JWT_SECRET
 import cn.rtast.mvnrepo.accountManager
-import cn.rtast.mvnrepo.entity.api.DeleteAccount
-import cn.rtast.mvnrepo.entity.api.JWTResponse
-import cn.rtast.mvnrepo.entity.api.ResponseMessage
-import cn.rtast.mvnrepo.entity.api.UserAccount
+import cn.rtast.mvnrepo.entity.api.*
 import cn.rtast.mvnrepo.security.generateJWT
 import cn.rtast.mvnrepo.util.str.toJson
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -35,6 +33,12 @@ fun Application.configureUserAPIRouting() {
         }
 
         authenticate("auth-jwt") {
+            get("/-/api/user") {
+                val username = call.principal<JWTPrincipal>()?.payload?.getClaim("username")?.asString()!!
+                val account = accountManager.getAccount(username)!!
+                call.respond(NoSensitiveAccount(account.username, account.createAt, account.enabled))
+            }
+
             post("/-/api/user") {
                 val account = call.receive<UserAccount>()
                 if (accountManager.getAccount(account.username) == null) {
