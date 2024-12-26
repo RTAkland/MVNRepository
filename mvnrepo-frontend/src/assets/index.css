@@ -16,3 +16,63 @@
 .modal-body input {
     margin-bottom: 10px;
 }
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+}
+
+.folder {
+    cursor: pointer;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.folder:hover {
+    text-decoration: underline;
+}
+
+.file {
+    color: green;
+    cursor: pointer;
+}
+
+.file:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    color: darkgoldenrod;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.file-size {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+#footer-icp {
+    text-decoration: none;
+    color: #f8f9fa;
+}
