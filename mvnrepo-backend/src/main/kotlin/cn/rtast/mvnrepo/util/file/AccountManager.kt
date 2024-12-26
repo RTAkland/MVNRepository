@@ -19,10 +19,12 @@ import java.time.Instant
 
 class AccountManager {
 
-    suspend fun updateAccount(username: String, password: String) {
+    suspend fun updateAccount(username: String, password: String, enabled: Boolean) {
         suspendedTransaction {
             AccountTable.update({ AccountTable.username eq username }) {
                 it[AccountTable.password] = password
+                it[AccountTable.enabled] = enabled
+                it[AccountTable.username] = username
             }
         }
     }

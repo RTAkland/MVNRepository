@@ -15,7 +15,7 @@ import cn.rtast.mvnrepo.util.str.toJson
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -60,7 +60,7 @@ fun Application.configureUserAPIRouting() {
                         status = HttpStatusCode.NotFound
                     )
                 } else {
-                    accountManager.updateAccount(account.username, account.password)
+                    accountManager.updateAccount(account.username, account.password, account.enabled)
                     call.respond(ResponseMessage(200, "账户更新成功"))
                 }
             }
