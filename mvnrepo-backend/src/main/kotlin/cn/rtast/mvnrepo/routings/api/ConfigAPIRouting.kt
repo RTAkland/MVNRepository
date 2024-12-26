@@ -9,7 +9,6 @@ package cn.rtast.mvnrepo.routings.api
 
 import cn.rtast.mvnrepo.configManager
 import cn.rtast.mvnrepo.entity.config.Config
-import cn.rtast.mvnrepo.util.str.toJson
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -19,7 +18,7 @@ import io.ktor.server.routing.*
 fun Application.configureConfigAPIRouting() {
     routing {
         get("/-/api/settings") {
-            call.respondText(configManager.readConfig().toJson())
+            call.respond(configManager.readConfig())
         }
 
         authenticate("auth-jwt") {
@@ -29,7 +28,7 @@ fun Application.configureConfigAPIRouting() {
                 val updatedConfig = updateConfig(currentConfig, update).apply {
                     configManager.writeConfig(this)
                 }
-                call.respondText(updatedConfig.toJson())
+                call.respond(updatedConfig)
             }
         }
     }
