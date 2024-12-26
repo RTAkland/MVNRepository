@@ -8,6 +8,7 @@
 
 package cn.rtast.mvnrepo
 
+import cn.rtast.mvnrepo.entity.config.Config
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.dataformat.xml.XmlFactory
@@ -18,9 +19,11 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.io.File
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 val gson: Gson = GsonBuilder()
+    .setPrettyPrinting()
+    .serializeNulls()
     .disableHtmlEscaping()
     .create()
 
@@ -44,3 +47,14 @@ val xmlMapper = XmlMapper(XmlFactory().apply {
 val JWT_SECRET = UUID.randomUUID().toString()
 
 val STARTUP_TIME = Instant.now().epochSecond
+
+val EXCLUDE_FILES = listOf(
+    "data.sqlite",
+    "config.json",
+)
+
+val DEFAULT_CONFIG = Config(
+    mutableMapOf(
+        "ICPLicense" to null
+    )
+)

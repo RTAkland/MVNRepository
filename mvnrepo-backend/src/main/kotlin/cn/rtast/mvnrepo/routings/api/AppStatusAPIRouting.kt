@@ -7,6 +7,7 @@
 
 package cn.rtast.mvnrepo.routings.api
 
+import cn.rtast.mvnrepo.EXCLUDE_FILES
 import cn.rtast.mvnrepo.STARTUP_TIME
 import cn.rtast.mvnrepo.STORAGE_PATH_
 import cn.rtast.mvnrepo.entity.api.AppStatus
@@ -19,6 +20,7 @@ import java.nio.file.Files
 import java.time.Instant
 import kotlin.io.path.Path
 import kotlin.io.path.fileSize
+import kotlin.io.path.name
 
 fun Application.configureAppStatusAPIRouting() {
     routing {
@@ -57,7 +59,7 @@ private fun calculateUsedSize(): StorageOverview {
     Files.walk(Path(STORAGE_PATH_)).use { stream ->
         stream.filter { Files.isRegularFile(it) }
             .forEach { file ->
-                totalSize += file.fileSize()
+                if (file.fileName.name !in EXCLUDE_FILES) totalSize += file.fileSize()
             }
     }
     return StorageOverview(totalSize)
