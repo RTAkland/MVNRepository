@@ -11,6 +11,8 @@ import cn.rtast.mvnrepo.JWT_SECRET
 import cn.rtast.mvnrepo.PRIVATE_REPOSITORIES
 import cn.rtast.mvnrepo.REPOSITORIES
 import cn.rtast.mvnrepo.accountManager
+import cn.rtast.mvnrepo.configManager
+import cn.rtast.mvnrepo.enums.StorageType
 import cn.rtast.mvnrepo.registry.parsePUTPackage
 import cn.rtast.mvnrepo.registry.serveMavenFiles
 import cn.rtast.mvnrepo.registry.storagePackage
@@ -55,13 +57,15 @@ fun Application.configureMavenRepositoryRouting() {
                 put(Regex("/$it/(.*)")) {
                     val authedUser = call.principal<UserIdPrincipal>()?.name!!
                     val packageStructure = parsePUTPackage(call)
-                    storagePackage(packageStructure, authedUser)
+                    val storageType = configManager.readStorageConfig()[it]!!
+                    storagePackage(packageStructure, authedUser, storageType)
                     call.respond(HttpStatusCode.OK)
                 }
             }
 
             PRIVATE_REPOSITORIES.forEach {
                 get(Regex("/$it/(.*)")) {
+                    val storageType = configManager.readStorageConfig()[it]!!
                     serveMavenFiles(call)
                 }
             }

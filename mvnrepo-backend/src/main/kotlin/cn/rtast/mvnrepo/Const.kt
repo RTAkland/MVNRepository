@@ -9,6 +9,7 @@
 package cn.rtast.mvnrepo
 
 import cn.rtast.mvnrepo.entity.config.Config
+import cn.rtast.mvnrepo.enums.StorageType
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.dataformat.xml.XmlFactory
@@ -55,6 +56,11 @@ val EXCLUDE_FILES = listOf(
 
 val DEFAULT_CONFIG = Config(
     mutableMapOf(
-        "ICPLicense" to null
+        "ICPLicense" to null,
+        "storage" to mapOf(
+            "releases" to StorageType.LocalFile,
+            "snapshots" to StorageType.LocalFile,
+            "private" to StorageType.LocalFile
+        )
     )
 )

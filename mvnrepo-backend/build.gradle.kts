@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.serialization.gson)
+    implementation("software.amazon.awssdk:s3:2.29.40")
 }
 
 sourceSets {

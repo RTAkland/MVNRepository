@@ -10,6 +10,7 @@ package cn.rtast.mvnrepo.util.file
 import cn.rtast.mvnrepo.DEFAULT_CONFIG
 import cn.rtast.mvnrepo.STORAGE_PATH
 import cn.rtast.mvnrepo.entity.config.Config
+import cn.rtast.mvnrepo.enums.StorageType
 import cn.rtast.mvnrepo.util.str.fromJson
 import cn.rtast.mvnrepo.util.str.toJson
 import java.io.File
@@ -21,6 +22,10 @@ class ConfigManager {
             createNewFile()
             writeText(DEFAULT_CONFIG.toJson())
         }
+    }
+
+    fun readStorageConfig(): Map<String, StorageType> {
+        return this.readConfig().settings["storage"]?.toJson()?.fromJson<Map<String, StorageType>>()!!
     }
 
     fun readConfig(): Config {

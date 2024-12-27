@@ -37,7 +37,7 @@ publishing {
             isAllowInsecureProtocol = true
             credentials {
                 username = "admin"
-                password = "99efa089-1154-479c-9da7-e7e40ba9dcfb"
+                password = "4565271c-e128-4fde-bfd8-daad4c286da2"
             }
         }
     }
